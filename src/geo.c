@@ -1,12 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "global.h"
 #include "geo.h"
 
 // plot a point at a location (x, y) on screen
 void plot(int x, int y, Color c)
 {
     printf("Plot: (%d, %d) Color(%d, %d, %d)\n", x, y, c[0], c[1], c[2]);
+
+    int w, h;
+    SDL_GetWindowSize(win, &w, &h);
+    SDL_SetRenderDrawColor(render, c[0], c[1], c[2], 255);
+    SDL_RenderDrawPoint(render, w / 2 + x, h / 2 + y);
+
 }
 
 //helper functions for plotLine
@@ -132,8 +139,8 @@ void plotLine(int x0, int y0, int x1, int y1, Color c)
 //helper functions for plotTri
 void plotBotTri(P2 v1, P2 v2, P2 v3, Color c)
 {
-    double invslope1 = (v2[0] - v1[0]) / (v2[1] - v1[1]);
-    double invslope2 = (v3[0] - v1[0]) / (v3[1] - v1[1]);
+    double invslope1 = (double)(v2[0] - v1[0]) / (double)(v2[1] - v1[1]);
+    double invslope2 = (double)(v3[0] - v1[0]) / (double)(v3[1] - v1[1]);
 
     double curx1 = v1[0];
     double curx2 = v1[0];
@@ -151,8 +158,8 @@ void plotBotTri(P2 v1, P2 v2, P2 v3, Color c)
 
 void plotTopTri(P2 v1, P2 v2, P2 v3, Color c)
 {
-    double invslope1 = (v3[0] - v1[0]) / (v3[1] - v1[1]);
-    double invslope2 = (v3[0] - v2[0]) / (v3[1] - v2[1]);
+    double invslope1 = (double)(v3[0] - v1[0]) / (double)(v3[1] - v1[1]);
+    double invslope2 = (double)(v3[0] - v2[0]) / (double)(v3[1] - v2[1]);
 
     double curx1 = v3[0];
     double curx2 = v3[0];
