@@ -3,7 +3,7 @@ WORKDIR = `git rev-parse --show-toplevel`
 CFLAGS = -g `sdl2-config --cflags --libs`
 OBJ_DIR = $(WORKDIR)/build
 
-%.o: %.cpp
+%.o: %.c
 	@ $(GCC) $(CFLAGS) -c $^ -o $(OBJ_DIR)/$@
 
 $(SUBDIRS):
