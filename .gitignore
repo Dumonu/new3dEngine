@@ -1,3 +1,7 @@
+# Other Things
+*.swp
+debug
+
 # Prerequisites
 *.d
 
