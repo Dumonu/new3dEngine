@@ -7,4 +7,6 @@
 extern SDL_Window *win;
 extern SDL_Renderer *render;
 
+extern const double pi;
+
 #endif

@@ -1,10 +1,14 @@
 #include <SDL_events.h>
+#include <unistd.h>
+#include <math.h>
 
 #include "global.h"
 #include "geo.h"
 
 SDL_Window* win;
 SDL_Renderer* render;
+
+const double pi = M_PI;
 
 int main()
 {
@@ -24,6 +28,13 @@ int main()
     plot(4, 2, white);
     plot(32, 1, black);
 
+    P2 t1v1 = {-100, 100};
+    P2 t1v2 = {-100, -100};
+    P2 t1v3 = {100, -100};
+    plotTri(t1v1, t1v2, t1v3, black);
+
+    SDL_RenderPresent(render);
+
     plotLine(1,1,10,1,white);
     plotLine(0, 1, 6, 4, white);
     plotLine(0,0,10,10,white);
@@ -40,6 +51,15 @@ int main()
     plotLine(1, 0, 4, -6, white);
     plotLine(0, 0, 10, -10, white);
     plotLine(0, -1, 6, -4, white);
+ 
+    plotLine(0, 0, 100, 0, white);
+    plotLine(0, 0, 100, 100, white);
+    plotLine(0, 0, 0, 100, white);
+    plotLine(0, 0, -100, 100, white);
+    plotLine(0, 0, -100, 0, white);
+    plotLine(0, 0, -100, -100, white);
+    plotLine(0, 0, 0, -100, white);
+    plotLine(0, 0, 100, -100, white);
 
     P2 v1 = {25, 25};
     P2 v2 = {50, 50};
@@ -47,6 +67,15 @@ int main()
     plotTri(v1, v2, v3, white);
 
     SDL_RenderPresent(render);
+
+ // for(double i = 0; i < 2 * pi; i += pi / 12)
+ // {
+ //     double x = cos(i);
+ //     double y = sin(i);
+
+ //     plotLine(0, 0, (int)(x * 100), (int)(y * 100), white);
+ //     SDL_RenderPresent(render);
+ // }
 
     while(1)
     {

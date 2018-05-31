@@ -6,7 +6,7 @@ typedef int P2[2];
 typedef int Point[3];
 typedef int Vector[3];
 typedef double Rotation[3];
-typedef char Color[3];
+typedef unsigned char Color[3];
 
 //Compound geometric typedefs
 typedef Point segment[2];

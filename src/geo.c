@@ -7,12 +7,12 @@
 // plot a point at a location (x, y) on screen
 void plot(int x, int y, Color c)
 {
-    printf("Plot: (%d, %d) Color(%d, %d, %d)\n", x, y, c[0], c[1], c[2]);
+  //printf("Plot: (%d, %d) Color(%d, %d, %d)\n", x, y, c[0], c[1], c[2]);
 
     int w, h;
     SDL_GetWindowSize(win, &w, &h);
     SDL_SetRenderDrawColor(render, c[0], c[1], c[2], 255);
-    SDL_RenderDrawPoint(render, w / 2 + x, h / 2 + y);
+    SDL_RenderDrawPoint(render, w / 2 + x, h / 2 - y);
 
 }
 
@@ -32,7 +32,7 @@ void switchToOctantZeroFrom(int octant, int* x, int* y)
         *x = *x ^ *y;
         *y = *x ^ *y;
         *x = *x ^ *y;
-        *x = -(*x);
+        *y = -(*y);
         return;
     case 3:
         *x = -(*x);
@@ -52,7 +52,7 @@ void switchToOctantZeroFrom(int octant, int* x, int* y)
         *x = *x ^ *y;
         *y = *x ^ *y;
         *x = *x ^ *y;
-        *y = -(*y);
+        *x = -(*x);
         return;
     case 7:
         *y = -(*y);
@@ -75,7 +75,7 @@ void switchFromOctantZeroTo(int octant, int* x, int* y)
         *x = *x ^ *y;
         *y = *x ^ *y;
         *x = *x ^ *y;
-        *y = -(*y);
+        *x = -(*x);
         return;
     case 3:
         *x = -(*x);
@@ -95,7 +95,7 @@ void switchFromOctantZeroTo(int octant, int* x, int* y)
         *x = *x ^ *y;
         *y = *x ^ *y;
         *x = *x ^ *y;
-        *x = -(*x);
+        *y = -(*y);
         return;
     case 7:
         *y = -(*y);
@@ -114,18 +114,24 @@ void plotLine(int x0, int y0, int x1, int y1, Color c)
     int q = 3 * (dy < 0) + (dy >= 0 ? 1 : -1) * (dx < 0); //determine quadrant
     int o = 2 * q + (q % 2) * (abs(dx) >= abs(dy)) + ((q + 1) % 2) * (abs(dy) > abs(dx)); // determine octant
 
+    printf("q = %d; o = %d\n", q, o);
+
     switchToOctantZeroFrom(o, &x0, &y0);
     switchToOctantZeroFrom(o, &x1, &y1);
     dx = x1 - x0;
     dy = y1 - y0;
 
+    printf("x0 = %d; x1 = %d\n", x0, x1);
+
     int D = 2*dy - dx;
     int y = y0;
 
-    for(int x = x0; abs(x) <= abs(x1); x += x1 / abs(x1))
+    //for(int x = x0; abs(x) <= abs(x1); x += x1 / abs(x1))
+    for(int x = x0; x <= x1; x += 1)
     {
         int tx = x, ty = y;
         switchFromOctantZeroTo(o, &tx, &ty);
+      //printf("(%d, %d)", tx, ty);
         plot(tx, ty, c);
         if(D * (dy < 0 ? -1 : 1) > 0)
         {
@@ -139,6 +145,7 @@ void plotLine(int x0, int y0, int x1, int y1, Color c)
 //helper functions for plotTri
 void plotBotTri(P2 v1, P2 v2, P2 v3, Color c)
 {
+  //printf("Plot Bottom Triangle: (%d, %d),(%d, %d),(%d, %d)\n", v1[0], v1[1], v2[0], v2[1], v3[0], v3[1]);
     double invslope1 = (double)(v2[0] - v1[0]) / (double)(v2[1] - v1[1]);
     double invslope2 = (double)(v3[0] - v1[0]) / (double)(v3[1] - v1[1]);
 
@@ -158,6 +165,7 @@ void plotBotTri(P2 v1, P2 v2, P2 v3, Color c)
 
 void plotTopTri(P2 v1, P2 v2, P2 v3, Color c)
 {
+  //printf("Plot Top Triangle: (%d, %d),(%d, %d),(%d, %d)\n", v1[0], v1[1], v2[0], v2[1], v3[0], v3[1]);
     double invslope1 = (double)(v3[0] - v1[0]) / (double)(v3[1] - v1[1]);
     double invslope2 = (double)(v3[0] - v2[0]) / (double)(v3[1] - v2[1]);
 
@@ -167,9 +175,15 @@ void plotTopTri(P2 v1, P2 v2, P2 v3, Color c)
     for(int y = v3[1]; y > v1[1]; --y)
     {
         if(curx1 <= curx2)
+        {
+  //        printf("plotLine(%d, %d, %d, %d, {%d, %d, %d});\n", (int)curx1, y, (int)curx2, y, c[0], c[1], c[2]);
             plotLine((int)curx1, y, (int)curx2, y, c);
+        }
         else
+        {
+   //       printf("plotLine(%d, %d, %d, %d, {%d, %d, %d});\n", (int)curx2, y, (int)curx1, y, c[0], c[1], c[2]);
             plotLine((int)curx2, y, (int)curx1, y, c);
+        }
         curx1 -= invslope1;
         curx2 -= invslope2;
     }
@@ -177,6 +191,7 @@ void plotTopTri(P2 v1, P2 v2, P2 v3, Color c)
 
 void plotTri(P2 v1, P2 v2, P2 v3, Color c)
 {
+  //printf("Plot Triangle: (%d, %d),(%d, %d),(%d, %d)\n", v1[0], v1[1], v2[0], v2[1], v3[0], v3[1]);
     // sort the vertices by y-coor ascending so v1 is topmost
     if(v1[1] > v2[1])
     {

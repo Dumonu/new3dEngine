@@ -1,6 +1,6 @@
 GCC = gcc
 WORKDIR = `git rev-parse --show-toplevel`
-CFLAGS = -g `sdl2-config --cflags --libs`
+CFLAGS = -g -lm `sdl2-config --cflags --libs`
 OBJ_DIR = $(WORKDIR)/build
 
 %.o: %.c
