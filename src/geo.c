@@ -1,8 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "global.h"
 #include "geo.h"
+
+int* project(Point P, Camera c)
+{
+    // Difference between P and c's position
+    int x = P[0] - c.c[0];
+    int y = P[1] - c.c[1];
+    int z = P[2] - c.c[2];
+
+    // cosine of the three rotation angles
+    double c_x = cos(c.theta[0]);
+    double c_y = cos(c.theta[1]);
+    double c_z = cos(c.theta[2]);
+
+    // sine of the three rotation angles
+    double s_x = sin(c.theta[0]);
+    double s_y = sin(c.theta[1]);
+    double s_z = sin(c.theta[2]);
+
+    double d_x = c_y*(s_z*y + c_z*x) - s_y*z;
+    double d_y = s_x*(c_y*z + s_y*(s_z*y + c_z*x)) + c_x*(c_z*y - s_z*x);
+    double d_z = c_x*(c_y*z + s_y*(s_z*y + c_z*x)) - s_x*(c_z*y - s_z*x);
+
+    int* b = malloc(2 * sizeof(*b));
+    b[0] = (c.e[2] / d_z)*d_x - c.e[0];
+    b[1] = (c.e[2] / d_z)*d_y - c.e[1];
+
+    return b;
+}
 
 // plot a point at a location (x, y) on screen
 void plot(int x, int y, Color c)
